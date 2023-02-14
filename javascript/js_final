@@ -1,0 +1,74 @@
+const input = require('readline-sync');
+
+//cut this code out for inplementation
+function getValidInput(prompt, isValid) {
+
+    let userInput = input.question(prompt);
+
+    while (!isValid(userInput)) {
+        console.log("Please enter a number.");
+        userInput = input.question(prompt);
+    }
+
+    return userInput;
+}
+
+//cut this code out for implementation
+let isNum = function (n) {
+    return !(isNaN(n));
+};
+
+let checkCredit = function (n) {
+    if (n < 300 || n > 850) {
+        console.log('Please enter a valid credit score.')
+        console.log(getValidInput('Enter your credit score: ', isNum));
+    }
+    return n;
+}
+
+let getValue = function (n) {
+    if (n < 100000) {
+        console.log('Please enter a minimum of $100,000.');
+        getValidInput('Enter the value of the property: ', isNum);
+    }
+    return n;
+}
+
+let getDownPayment = function (n) {
+    if (n < 25) {
+        console.log('Please enter a minimum of 25%.')
+        getDownPayment(getValidInput('Enter your down payment: ', isNum));
+    }
+    if (n >= 100) {
+        console.log('Loan not needed?')
+    }
+    return n / 100;
+}
+
+let creditScore = checkCredit(getValidInput('Enter your credit score: ', isNum)); //cut
+
+let propertyValue = getValue(getValidInput('Enter the value of the property: ', isNum)); //cut
+
+let downPayment = getDownPayment(getValidInput('Enter your down payment(as a percent): ', isNum)); //cut
+
+function getInterest(userScore) {
+    let interestRate = 0;
+    if (userScore < 650) {
+        console.log('Call to see what we can do for you.');
+    }
+    if (userScore <= 700 && userScore >= 650) interestRate = 0.0799;
+    if (userScore > 700 && userScore < 750) interestRate = 0.0749;
+    if (userScore >= 750) interestRate = 0.0699;
+
+    return interestRate;
+}
+
+let initialPayment = propertyValue - downPayment;
+
+function getLoanAmount(interest, value) {
+    let monthlyInterest = (value / 360) * interest;
+    let monthlyPayment = (value / 360) + monthlyInterest;
+    return monthlyPayment.toFixed(2);
+}
+
+console.log(getLoanAmount(getInterest(creditScore), initialPayment));
